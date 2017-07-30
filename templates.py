@@ -8,11 +8,11 @@ import string
 
 from google.appengine.ext import db
 
-template_dir = os.path.join(os.path.dirname(__file__), 'templates')
-jinja2_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir),
+template_dir = os.path.abspath(os.path.dirname(__file__))
+jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir),
                                  autoescape = True)
 
-def render_str(self, template, **params):
+def render_str(template, **params):
         t = jinja_env.get_template(template)
         return t.render(params)
 
@@ -28,10 +28,10 @@ class MainPage(Handler):
         self.render('rot13.html')
     def post(self):
         rot13 = ''
-        text = self.request.get_all('text')
+        text = self.request.get('text')
         if text:
             rot13 = text.encode('rot13')
 
         self.render('rot13.html', text = rot13)
 
-app = webapp2.WSGIApplication([('/rot13', MainPage),], debug = True)
+app = webapp2.WSGIApplication([('/', MainPage),], debug = True)
